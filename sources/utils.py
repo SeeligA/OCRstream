@@ -14,13 +14,13 @@ def copy_dirs(src, dst):
 
 
 def copy_files(src, dst):
-    # Copy source directory recursively to target path
-    if not os.path.exists(dst):
-        os.mkdir(dst)
+    # Copy source files to target path
+    if os.path.exists(src):
+        if not os.path.exists(dst):
+            os.makedirs(dst, exist_ok=True)
 
-    try:
         shutil.copy(src, dst)
         logging.info('Copying files to: {}'.format(dst))
 
-    except FileNotFoundError:
-        logging.info('An error occurred with {}'.format(src))
+    else:
+        logging.info('Skipped file {}. Path does not exist.'.format(src))

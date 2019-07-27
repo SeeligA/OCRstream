@@ -2,7 +2,7 @@ import os
 import logging
 
 BASE_DIR = os.getcwd()
-TOP_DIR = "C:\\Users\\seelig\\extract"
+TOP_DIR = "C:\\Users\\seelig\\pdf_ocr"
 FILE_SIZE_FILTER = 200
 PATH_TO_PG = "C:\Program Files\Just Great Software\PowerGREP 5"
 PATH_TO_FR = "C:\Program Files (x86)\ABBYY FineReader 11"
@@ -43,14 +43,14 @@ def find_failed_conversions():
     return fails
 
 
-def run_ocr(fp):
+def run_ocr(fp, cache):
     """Run OCR tool on documents that were presumably scanned.
     Arguments:
         fp -- Path to *.txt file flagged because file size < FILE_SIZE_FILTER
 
     Collects language settings from file path
     """
-    lang = retrieve_lid(fp)
+    lang = retrieve_lid(fp, cache)
     # Remove ".txt" extension from file path
     path_to_file = fp[:-4]
 
@@ -72,10 +72,13 @@ def terminate_finereader():
     os.system(command)
 
 
-def retrieve_lid(fp):
+def retrieve_lid(fp, cache):
     """Parse language ID from path to file."""
-    tail = fp[len(TOP_DIR) + 1:]
-    lid = os.path.dirname(tail)[0]
+
+    # tail = fp[len(TOP_DIR) + 1:]
+    head = os.path.dirname(fp)
+    project_folder = os.path.basename(head)
+    lid = cache.get(project_folder, None)[-1]
 
     # See "ABBYY FineReader 11/FinereaderCmd.txt" for valid language names
     lid_dict = {"1": "english french german italian",
@@ -83,18 +86,30 @@ def retrieve_lid(fp):
                 "3": "english french german italian",
                 "4": "english french german spanish",
                 "5": "english french german italian",
-                "7": "english french german swedish",
+                "6": "english german danish",
+                "7": "english german swedish",
+                "8": "english german finnish",
+                "9": "english german norwegian",
                 "10": "english french german dutch",
-                "11": "english french german portuguese",
-                "13": "english french german croatian",
-                "14": "english french german turkish",
-                "15": "english french german greek",
-                "18": "english french german hungarian",
-                "19": "english french german polish",
-                "20": "english french german czech",
-                "22": "english french german japanese",
-                "23": "english french german chinese",
-                "27": "english french german hebrew",
+                "11": "english german PortugueseBrazilian PortugueseStandard",
+                "12": "english german SerbianLatin SerbianCyrillic",
+                "13": "english german croatian",
+                "14": "english german turkish",
+                "15": "english german greek",
+                "16": "english german russian",
+                "17": "english german bulgarian",
+                "18": "english german hungarian",
+                "19": "english german polish",
+                "20": "english german czech",
+                "21": "english german romanian",
+                "22": "english german japanese",
+                "23": "english german chinese",
+                "24": "english german arabic",
+                "25": "english german SerbianLatin SerbianCyrillic",
+                "26": "english german estonian",
+                "27": "english german hebrew",
+                "28": "english german korean",
+                "30": "english german slovenian",
                 }
 
     return lid_dict.get(lid, "english french german italian")
