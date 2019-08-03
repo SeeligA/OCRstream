@@ -1,10 +1,7 @@
 import os
-import shutil
-from sources.utils import copy_files
 
-BASE_DIR = os.getcwd()
-TOP_DIR = "C:\\Users\\seelig\\pdf_ocr"
-CORPUS_DIR = "C:\\Users\\seelig\\test_corpus\\"
+from sources.utils import copy_files
+from sources.config import TOP_DIR, CORPUS_TEMP
 
 
 def load_to_corpus(cache):
@@ -17,6 +14,6 @@ def load_to_corpus(cache):
             # Lookup client folder in cache dictionary
             client_folder = cache.get(project_folder, None)[0]
 
-            dst = os.path.join(CORPUS_DIR, os.path.join(client_folder, project_folder))
+            dst = os.path.join(CORPUS_TEMP, os.path.join(client_folder, project_folder))
 
             copy_files(src, dst)

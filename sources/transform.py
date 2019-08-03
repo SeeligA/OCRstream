@@ -1,28 +1,25 @@
 import os
 import logging
 
-BASE_DIR = os.getcwd()
-TOP_DIR = "C:\\Users\\seelig\\pdf_ocr"
-FILE_SIZE_FILTER = 200
-PATH_TO_PG = "C:\Program Files\Just Great Software\PowerGREP 5"
-PATH_TO_FR = "C:\Program Files (x86)\ABBYY FineReader 11"
+from sources.config import PATH_TO_PG, PATH_TO_PGA, TOP_DIR, BASE_DIR, PATH_TO_FR, FILE_SIZE_FILTER, lid_dict
 
 
-def flat_convert(path_to_action):
+def flat_convert():
     """
 
     path_to_action:
 
     """
-    path_to_exe = PATH_TO_PG
+
     path_to_results = os.path.join(TOP_DIR, "results.html")
+    path_to_action = os.path.join(BASE_DIR, PATH_TO_PGA)
 
     command = "PowerGrep5.exe /folderrecurse \"" + \
               TOP_DIR + "\" \"" + \
               path_to_action + "\" /silent /save \"" + \
               path_to_results + "\" /quit"
 
-    os.chdir(path_to_exe)
+    os.chdir(PATH_TO_PG)
     os.system(command)
     logging.info("Results written to: {}".format(path_to_results))
 
@@ -59,10 +56,9 @@ def run_ocr(fp, cache):
                " /lang " + lang + \
                " /out \"" + fp + "\" /quit"
 
-    path_to_exe = PATH_TO_FR
-    os.chdir(path_to_exe)
-
+    os.chdir(PATH_TO_FR)
     os.system(command)
+
     logging.info("OCR results written to: {}".format(fp))
     os.chdir(BASE_DIR)
 
@@ -81,35 +77,6 @@ def retrieve_lid(fp, cache):
     lid = cache.get(project_folder, None)[-1]
 
     # See "ABBYY FineReader 11/FinereaderCmd.txt" for valid language names
-    lid_dict = {"1": "english french german italian",
-                "2": "english french german italian",
-                "3": "english french german italian",
-                "4": "english french german spanish",
-                "5": "english french german italian",
-                "6": "english german danish",
-                "7": "english german swedish",
-                "8": "english german finnish",
-                "9": "english german norwegian",
-                "10": "english french german dutch",
-                "11": "english german PortugueseBrazilian PortugueseStandard",
-                "12": "english german SerbianLatin SerbianCyrillic",
-                "13": "english german croatian",
-                "14": "english german turkish",
-                "15": "english german greek",
-                "16": "english german russian",
-                "17": "english german bulgarian",
-                "18": "english german hungarian",
-                "19": "english german polish",
-                "20": "english german czech",
-                "21": "english german romanian",
-                "22": "english german japanese",
-                "23": "english german chinese",
-                "24": "english german arabic",
-                "25": "english german SerbianLatin SerbianCyrillic",
-                "26": "english german estonian",
-                "27": "english german hebrew",
-                "28": "english german korean",
-                "30": "english german slovenian",
-                }
+    # Will default to "english french german italian" if integer is "0", None or other
 
     return lid_dict.get(lid, "english french german italian")
