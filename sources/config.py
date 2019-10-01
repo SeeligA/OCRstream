@@ -1,12 +1,11 @@
 import os
 
-
 BASE_DIR = os.getcwd()
 
 #  TODO: Replace paths to match your folder structure
-# Specify working directory
+# Specify local working directory.
 TOP_DIR = "C:\\Users\\seelig\\01pdf_temp"
-# Specify staging directory containing the TXT training files
+# Specify local staging directory containing the TXT training files
 CORPUS_TEMP = "C:\\Users\\seelig\\02corpus_temp\\"
 
 # Path to project file containing client IDs, project IDs and language IDs
@@ -36,15 +35,15 @@ clients_dict = {"4": "Fine Apples Ltd. 4",
 # Map strings to languages used for OCR processing.
 # Keys relate to the language specifier used in PROJECT_DATABASE_EXPORT.
 # Other languages have been added to account for multilingual content.
-lid_dict = {"1": "english french german italian",
-            "2": "english french german italian",
-            "3": "english french german italian",
-            "4": "english french german spanish",
-            "5": "english french german italian",
-            "6": "english german danish",
-            "7": "english german swedish",
-            "8": "english german finnish",
-            "9": "english german norwegian",
+lid_dict = {"01": "english french german italian",
+            "02": "english french german italian",
+            "03": "english french german italian",
+            "04": "english french german spanish",
+            "05": "english french german italian",
+            "06": "english german danish",
+            "07": "english german swedish",
+            "08": "english german finnish",
+            "09": "english german norwegian",
             "10": "english french german dutch",
             "11": "english german PortugueseBrazilian PortugueseStandard",
             "12": "english german SerbianLatin SerbianCyrillic",

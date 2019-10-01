@@ -64,7 +64,11 @@ def run_ocr(fp, cache):
 
 
 def terminate_finereader():
-    command = "taskkill /T /F /IM FineReader.exe"
+    """Terminate all FineReader processes."""
+    # This command should kill the FineReader parent process and all child processes.
+    # Note that there sometimes is an error which prevents taskkill from executing.
+    # In this case, you will need to run the following command manually for each batch.
+    command = "taskkill /F /IM FineReader.exe /T"
     os.system(command)
 
 
@@ -77,6 +81,6 @@ def retrieve_lid(fp, cache):
     lid = cache.get(project_folder, None)[-1]
 
     # See "ABBYY FineReader 11/FinereaderCmd.txt" for valid language names
-    # Will default to "english french german italian" if integer is "0", None or other
+    # Will default to "english french german italian" if integer is "00", None or other
 
     return lid_dict.get(lid, "english french german italian")

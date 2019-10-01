@@ -5,7 +5,7 @@ from multiprocessing.pool import Pool
 
 from sources.transform import find_failed_conversions, flat_convert, run_ocr, terminate_finereader
 from sources.extract import extract_source_files
-from sources.load import load_to_corpus
+from sources.load import load_to_corpus, parse_order_data
 
 logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
 
@@ -17,6 +17,10 @@ class MyPipeline(object):
         self.SLEEP = 10
         self.BATCH_SIZE = 50
         self.cache = dict()
+        self.PROJECT_DATABASE_EXPORT = str()
+
+    def get_order_data(self):
+        self.PROJECT_DATABASE_EXPORT = parse_order_data()
 
     def extract_files(self):
         """
@@ -26,8 +30,7 @@ class MyPipeline(object):
              fp -- path to TW CSV export with the following columns:
                     addressID, auftragsDatum, projektNR, D160_prt_D161_AUFTRAG_POS__::_kc_spp_ID
         """
-
-        self.cache = extract_source_files()
+        self.cache = extract_source_files(self.PROJECT_DATABASE_EXPORT)
 
     @staticmethod
     def convert():
@@ -74,6 +77,7 @@ class MyPipeline(object):
             cnt += self.SLEEP
 
         terminate_finereader()
+        sleep(1)  # Testing
         pool.join()
         logging.info("All processes joined")
 
@@ -83,6 +87,7 @@ class MyPipeline(object):
 
 if __name__ == '__main__':
     p = MyPipeline()
+    p.get_order_data()
     p.extract_files()
     p.convert()
     p.ocr()

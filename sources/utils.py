@@ -24,3 +24,22 @@ def copy_files(src, dst):
 
     else:
         logging.info('Skipped file {}. Path does not exist.'.format(src))
+
+
+def delete_dir(directory):
+    """Delete local working folder.
+    Arguments:
+        directory -- Path to local folder as string.
+    """
+
+    # IMPORTANT: This condition prevents you from accidentally deleting data on a network mount:
+    drive = 'C:'
+    if os.path.splitdrive(directory)[0] != drive:
+        raise Exception(f'Unable to remove {directory}. Check if path is valid and on drive {drive}.')
+
+    elif os.path.exists(directory):
+        shutil.rmtree(directory)
+        logging.info('{} has been removed'.format(directory))
+    else:
+        pass
+

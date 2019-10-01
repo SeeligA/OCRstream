@@ -1,29 +1,25 @@
 import os
-import shutil
 import csv
-import logging
 
-from sources.config import TOP_DIR, PROJECT_DATABASE_EXPORT, clients_dict, source_root
-from sources.utils import copy_dirs
+from sources.config import TOP_DIR, clients_dict, source_root
+from sources.utils import copy_dirs, delete_dir
 
 
-def extract_source_files():
+def extract_source_files(PROJECT_DATABASE_EXPORT):
     """
     Copy project source files listed in TW export to target directory (TOP DIR)
-
+    Arguments:
+        PROJECT_DATABASE_EXPORT -- Path to pre-processed CSV data from ERP export
     Returns:
         cache -- Dictionary mapping project folder names to source language ids
     """
 
-    # Clear target directory if it already exists.
-    # IMPORTANT: The second condition prevents you from accidentally deleting data not on C:
-    if os.path.exists(TOP_DIR) and os.path.splitdrive(TOP_DIR)[0] == 'C:':
-        shutil.rmtree(TOP_DIR)
-        logging.info('{} has been removed'.format(TOP_DIR))
+    # Clear local target directory if it already exists
+    delete_dir(TOP_DIR)
 
     # Process projects entries in CSV line per line
     with open(PROJECT_DATABASE_EXPORT, newline='') as csvfile:
-        datareader = csv.DictReader(csvfile, delimiter=';', quotechar='|')
+        datareader = csv.DictReader(csvfile, delimiter=',', quotechar='|')
         cache = dict()
 
         #  TODO: Replace the following strings with the corresponding column names in you PROJECT_DATABASE_EXPORT file
