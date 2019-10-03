@@ -50,6 +50,6 @@ def extract_source_files(PROJECT_DATABASE_EXPORT):
                 copy_dirs(src, dst)
 
                 # We store the source language ID to use it as a parameter in the retrieve_lid call during ocr
-                cache[project_folder] = [client, row[lid_col][:-2]]
+                cache[project_folder] = [client, row[lid_col]]
 
     return cache
