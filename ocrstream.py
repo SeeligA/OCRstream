@@ -1,4 +1,3 @@
-
 import logging
 from time import sleep
 from multiprocessing.pool import Pool
@@ -11,6 +10,11 @@ logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=lo
 
 
 class MyPipeline(object):
+    """Custom class for chaining processing steps.
+
+    Contains implementation for pooling workers. The purpose of this class is to provide a graph for different
+    operations performed on unstructured data.
+    """
 
     def __init__(self):
         self.TIMEOUT = 60
@@ -20,15 +24,15 @@ class MyPipeline(object):
         self.PROJECT_DATABASE_EXPORT = str()
 
     def get_order_data(self):
+        """Pre-process nested order data from ERP export."""
         self.PROJECT_DATABASE_EXPORT = parse_order_data()
 
     def extract_files(self):
-        """
-        Copy project source files listed in TW export to target directory (TOP DIR)
+        """Copy project source files listed in TW export to target directory (TOP DIR).
 
         Arguments:
              fp -- path to TW CSV export with the following columns:
-                    addressID, auftragsDatum, projektNR, D160_prt_D161_AUFTRAG_POS__::_kc_spp_ID
+                   addressID, auftragsDatum, projektNR, D160_prt_D161_AUFTRAG_POS__::_kc_spp_ID
         """
         self.cache = extract_source_files(self.PROJECT_DATABASE_EXPORT)
 
@@ -37,7 +41,7 @@ class MyPipeline(object):
         """Fetch extracted files and convert them to TXT files.
 
         The method uses the PowerGrep converter out of the box. It is a "flat" conversion, because it normalizes
-        the path to CLIENT/PROJECT-ID/FILENAME
+        the path to <CLIENT>/<PROJECT-ID>-<CLIENT-ID>/<FILENAME>.
         """
         flat_convert()
 
@@ -46,7 +50,7 @@ class MyPipeline(object):
         fails = find_failed_conversions()
 
         def batch(my_list, n=1):
-            """Slice a list of strings into n-sized batches"""
+            """Slice a list of strings into n-sized batches."""
             length = len(my_list)
             for ndx in range(0, length, n):
                 yield my_list[ndx:min(ndx + n, length)]

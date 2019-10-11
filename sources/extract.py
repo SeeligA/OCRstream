@@ -1,19 +1,23 @@
 import os
 import csv
 
-from sources.config import TOP_DIR, clients_dict, source_root
+from sources.config import TOP_DIR, clients_dict, SOURCE_ROOT
 from sources.utils import copy_dirs, delete_dir
 
 
 def extract_source_files(PROJECT_DATABASE_EXPORT):
-    """
-    Copy project source files listed in TW export to target directory (TOP DIR)
+    """Copy project source files listed in TW export to target directory (TOP DIR).
+
     Arguments:
         PROJECT_DATABASE_EXPORT -- Path to pre-processed CSV data from ERP export
-    Returns:
-        cache -- Dictionary mapping project folder names to source language ids
-    """
 
+    The function checks client IDs in the export data against the client_dict.
+    If there is a match, it tries to build a path from project ID data and client ID data.
+    If it generates a valid path, the folder for incoming files is copied to the staging folder.
+
+    Returns:
+        cache -- Dictionary mapping project folder names to client names and source language IDs
+    """
     # Clear local target directory if it already exists
     delete_dir(TOP_DIR)
 
@@ -43,13 +47,14 @@ def extract_source_files(PROJECT_DATABASE_EXPORT):
                 source_dir = '{}\\03_Projekte\\{}\\01_Orig'.format(client, project_folder)
                 target_dir = '{}\\{}'.format(client, project_folder)
 
-                src = os.path.join(source_root, source_dir)
+                src = os.path.join(SOURCE_ROOT, source_dir)
                 dst = os.path.join(TOP_DIR, target_dir)
 
                 # Call utility function to copy 01_Orig files to target path
                 copy_dirs(src, dst)
 
                 # We store the source language ID to use it as a parameter in the retrieve_lid call during ocr
-                cache[project_folder] = [client, row[lid_col]]
+                # We store the client name to build paths more easily
+                cache[project_folder] = (client, row[lid_col])
 
     return cache

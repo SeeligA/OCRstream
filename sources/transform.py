@@ -5,12 +5,11 @@ from sources.config import PATH_TO_PG, PATH_TO_PGA, TOP_DIR, BASE_DIR, PATH_TO_F
 
 
 def flat_convert():
+    """Convert working files to .TXT format.
+
+    This function runs a preconfigured PowerGrep5 action to convert writable files in the working folder.
+    The action excludes PDF files.
     """
-
-    path_to_action:
-
-    """
-
     path_to_results = os.path.join(TOP_DIR, "results.html")
     path_to_action = os.path.join(BASE_DIR, PATH_TO_PGA)
 
@@ -28,7 +27,6 @@ def flat_convert():
 
 def find_failed_conversions():
     """Search for files where conversion has likely failed."""
-
     fails = []
 
     for root, dirs, files in os.walk(TOP_DIR):
@@ -42,10 +40,10 @@ def find_failed_conversions():
 
 def run_ocr(fp, cache):
     """Run OCR tool on documents that were presumably scanned.
+
     Arguments:
         fp -- Path to *.txt file flagged because file size < FILE_SIZE_FILTER
-
-    Collects language settings from file path
+        cache -- Dictionary mapping project folder names to client names and source language IDs
     """
     lang = retrieve_lid(fp, cache)
     # Remove ".txt" extension from file path
@@ -64,17 +62,24 @@ def run_ocr(fp, cache):
 
 
 def terminate_finereader():
-    """Terminate all FineReader processes."""
-    # This command should kill the FineReader parent process and all child processes.
-    # Note that there sometimes is an error which prevents taskkill from executing.
-    # In this case, you will need to run the following command manually for each batch.
+    """Terminate all FineReader processes.
+
+    Note:
+        This command should kill the FineReader parent process and all child processes.
+        Note that there sometimes is an error which prevents taskkill from executing.
+        In this case, you will need to run the following command manually for each batch.
+    """
     command = "taskkill /F /IM FineReader.exe /T"
     os.system(command)
 
 
 def retrieve_lid(fp, cache):
-    """Parse language ID from path to file."""
+    """Parse language ID from path to file.
 
+    Arguments:
+        fp -- Path to *.txt file flagged because file size < FILE_SIZE_FILTER
+        cache -- Dictionary mapping project folder names to client names and source language IDs
+    """
     # tail = fp[len(TOP_DIR) + 1:]
     head = os.path.dirname(fp)
     project_folder = os.path.basename(head)

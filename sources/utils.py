@@ -28,10 +28,10 @@ def copy_files(src, dst):
 
 def delete_dir(directory):
     """Delete local working folder.
+
     Arguments:
         directory -- Path to local folder as string.
     """
-
     # IMPORTANT: This condition prevents you from accidentally deleting data on a network mount:
     drive = 'C:'
     if os.path.splitdrive(directory)[0] != drive:
@@ -39,7 +39,6 @@ def delete_dir(directory):
 
     elif os.path.exists(directory):
         shutil.rmtree(directory)
-        logging.info('{} has been removed'.format(directory))
+        logging.info(f'{directory} has been removed')
     else:
         pass
-
